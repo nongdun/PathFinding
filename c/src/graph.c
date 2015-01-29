@@ -39,6 +39,28 @@ Location GetNeighbours(pSquareGrid graph, pLocation loc, int i)
 	return neighbour;
 }
 
+float get_cost(pSquareGrid graph, pLocation loc)
+{
+	return graph->cost[loc->y][loc->x];
+}
+
+void loc_copy(pLocation dest, pLocation source)
+{
+	dest->x = source->x;
+	dest->y = source->y;
+}
+
+pLocation get_loc(pPath path, pLocation loc)
+{
+	return &path->came_from[loc->y][loc->x];
+}
+
+void set_loc(pPath path, pLocation loc, pLocation value)
+{
+	loc_copy(&path->came_from[loc->y][loc->x], value);
+}
+
+
 #if 0
 /*返回相邻点坐标*/
 pLocation GetNeighbours(pSquareGrid graph, pLocation loc)
