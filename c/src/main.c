@@ -17,8 +17,7 @@ Path cost_so_far = {20,20,{}};
 Location start = {4,15};
 Location goal  = {17,15};
 
-SquareGrid map = {20, 20,
-	{
+int map[MAP_HEIGHT][MAP_WIDTH] = {
  // 0001020304050607080910111213141516171819
 	{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},   // 00
 	{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},   // 01
@@ -40,7 +39,6 @@ SquareGrid map = {20, 20,
 	{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},   // 17
 	{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},   // 18
 	{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}    // 11
-	}
 };
 
 SquareGrid map2 = {20, 20,
@@ -101,12 +99,13 @@ void draw_tile(pPath path, pLocation loc)
 		i=0;
 	}
 
-#if 1
-	if(passable(&map, loc) == 0)
+#if 0
+	if(map.passable(&map, loc) == 0)
 	{
 		strcpy(string,"#");
 		i=0;
 	}
+#endif
 
 	if((loc->x == start.x) && (loc->y == start.y))
 	{
@@ -118,7 +117,7 @@ void draw_tile(pPath path, pLocation loc)
 		strcpy(string,"G");
 		i=0;
 	}
-#endif
+
 	if(i)
 	{
 		printf("%*s",width+1,string);
@@ -167,19 +166,22 @@ void DrawMap(pPath path, int style)
 
 int main()
 {
+	pSquareGrid grid_map = grid_init();
+	memcpy(grid_map->cost, map, sizeof(map));
+
 	int i=0, j=0;
 	for(i=0;i<20;i++)
 	{
 		for(j=0;j<20;j++)
 		{
-			printf("%d ", map.cost[i][j]);
+			printf("%d ", grid_map->cost[i][j]);
 		}
 		printf("\r\n");
 	}
 
 #if 1
 	//breadth_first_search(&map, &start, &goal);
-	dijkstra_search(&map, &start, &goal);
+	dijkstra_search(grid_map, &start, &goal);
 	DrawMap(&search, 0);
 	printf("\r\n");
 
@@ -196,7 +198,7 @@ int main()
 
 	queue_clear(&frontier);
 #endif
-	a_star_search(&map, &start, &goal);
+	a_star_search(grid_map, &start, &goal);
 	DrawMap(&search, 0);
 	printf("\r\n");
 

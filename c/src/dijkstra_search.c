@@ -29,13 +29,13 @@ pPath dijkstra_search(pSquareGrid graph, pLocation start, pLocation goal)
 		{
 			float new_cost=0;
 			Location neighbour;
-			neighbour = GetNeighbours(graph, &current, i);
+			neighbour = graph->get_neighbour(graph, &current, i);
 			if(neighbour.x < 0 || neighbour.y < 0)
 			{
 				continue;
 			}
 
-			new_cost = search.cost_so_far[current.y][current.x] + get_cost(graph, &neighbour);
+			new_cost = search.cost_so_far[current.y][current.x] + graph->get_cost(graph, &neighbour);
 			//if(is_in_queue(&frontier, &neighbour, compare) == 0)
 			if(search.visited[neighbour.y][neighbour.x] == 0 || new_cost< search.cost_so_far[neighbour.y][neighbour.x])
 			{

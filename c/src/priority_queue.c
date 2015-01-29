@@ -24,7 +24,16 @@ pQueue queue_init()
 		queue->head = NULL;
 		queue->tail = NULL;
 		queue->length = 0;
+
+		queue->empty = queue_is_empty;
+		queue->push = queue_push;
+		queue->pop = queue_pop;
+		queue->clear = queue_clear;
+		queue->have = is_in_queue;
+		queue->traverse = queue_traverse;
+		queue->destroy = queue_destroy;
 	}
+
 	return queue;
 }
 

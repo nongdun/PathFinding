@@ -37,7 +37,7 @@ pPath breadth_first_search(pSquareGrid graph, pLocation start, pLocation goal)
 		for(i=0; i<4; i++)
 		{
 			Location neighbour;
-			neighbour = GetNeighbours(graph, &current, i);
+			neighbour = graph->get_neighbour(graph, &current, i);
 			if(neighbour.x < 0 || neighbour.y < 0)
 			{
 				continue;

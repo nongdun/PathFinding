@@ -10,11 +10,33 @@
 
 #include "header.h"
 
+typedef enum _Direction
+{
+	Up	  = 0,
+	Right = 1,
+	Down  = 2,
+	Left  = 3
+}Direction, *pDirection;
+
+/*坐标结构体*/
+typedef struct _Location
+{
+	int x;
+	int y;
+}Location, *pLocation;
+
+typedef Location Item, *pItem;
+
 typedef struct _SquareGrid
 {
 	int width;
 	int height;
 	int cost[MAP_WIDTH][MAP_WIDTH];
+
+	int 	 (*in_bounds)(struct _SquareGrid *graph, pLocation loc);
+	int 	 (*passable)(struct _SquareGrid *graph, pLocation loc);
+	float 	 (*get_cost)(struct _SquareGrid *graph, pLocation loc);
+	Location (*get_neighbour)(struct _SquareGrid *graph, pLocation loc, Direction dir);
 }SquareGrid, *pSquareGrid;
 
 typedef struct _Path
@@ -27,16 +49,15 @@ typedef struct _Path
 }Path, *pPath;
 
 extern Location neighbours[4];
-extern Location GetNeighbours(pSquareGrid graph, pLocation loc, int i);
-extern int passable(pSquareGrid graph, pLocation loc);
-extern float get_cost(pSquareGrid graph, pLocation loc);
+
+extern pSquareGrid grid_init();		/*初始化地图结构体*/
 
 extern void loc_copy(pLocation dest, pLocation source);
 extern pLocation get_loc(pPath path, pLocation loc);
 extern void set_loc(pPath path, pLocation loc, pLocation value);
 
 extern pPath dijkstra_search(pSquareGrid graph, pLocation start, pLocation goal);
-extern pPath a_star_search(pSquareGrid graph, pLocation start, pLocation goal);
+extern pPath a_star_search(pSquareGrid map, pLocation start, pLocation goal);
 extern void RestructPath(pPath search, pLocation start, pLocation goal);
 
 

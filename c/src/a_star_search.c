@@ -13,17 +13,17 @@ float heuristic(pLocation loc1, pLocation loc2)
 }
 
 /*A starËÑË÷*/
-pPath a_star_search(pSquareGrid graph, pLocation start, pLocation goal)
+pPath a_star_search(pSquareGrid map, pLocation start, pLocation goal)
 {
-	queue_push(&frontier, start, 0);
+	pQueue frontier = queue_init();
+	frontier->push(frontier, start, 0);
 	search.cost_so_far[start->y][start->x] = 0;
 
-	while(!queue_is_empty(&frontier))
+	while(!frontier->empty(frontier))
 	{
 		int i=0;
 		Location current;
-		queue_pop(&frontier, &current);
-		//printf("current:%d,%d count of queue:%d\r\n",current.x,current.y,frontier.length);
+		frontier->pop(frontier, &current);
 
 		if(current.x == goal->x && current.y == goal->y)
 		{
@@ -34,14 +34,14 @@ pPath a_star_search(pSquareGrid graph, pLocation start, pLocation goal)
 		{
 			float new_cost=0;
 			Location neighbour;
-			neighbour = GetNeighbours(graph, &current, i);
+			neighbour = map->get_neighbour(map, &current, i);
 			if(neighbour.x < 0 || neighbour.y < 0)
 			{
 				continue;
 			}
 
-			new_cost = search.cost_so_far[current.y][current.x] + get_cost(graph, &neighbour);
-			//if(is_in_queue(&frontier, &neighbour, compare) == 0 || new_cost< search.cost_so_far[neighbour.y][neighbour.x])
+			new_cost = search.cost_so_far[current.y][current.x] + map->get_cost(map, &neighbour);
+			//if(is_in_queue(frontier, &neighbour, compare) == 0 || new_cost< search.cost_so_far[neighbour.y][neighbour.x])
 			if(search.visited[neighbour.y][neighbour.x] == 0 || new_cost< search.cost_so_far[neighbour.y][neighbour.x])
 			{
 				float priority = 0;
@@ -51,12 +51,14 @@ pPath a_star_search(pSquareGrid graph, pLocation start, pLocation goal)
 				//priority = heuristic(goal, &neighbour);	/*greedy*/
 				//printf("heuristic %.2f\r\n",priority);
 
-				queue_push(&frontier, &neighbour, priority);
+				frontier->push(frontier, &neighbour, priority);
 
 				set_loc(&search, &neighbour, &current);
 				search.visited[neighbour.y][neighbour.x] = 1;
 			}
 		}
 	}
+
+	frontier->destroy(frontier);
 	return &search;
 }
