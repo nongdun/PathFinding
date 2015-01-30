@@ -112,6 +112,7 @@ pLocation grid_get_neighbour(pSquareGrid graph, pLocation loc, Direction dir)
 
 		if((graph->in_bounds(graph, neighbour) && graph->passable(graph, neighbour)))
 		{
+			//printf("current [%d,%d]\tneighbour [%d,%d]\r\n",loc->x,loc->y, neighbour->x,neighbour->y);
 			return neighbour;		/*点在地图内，并且可通过*/
 		}
 	}

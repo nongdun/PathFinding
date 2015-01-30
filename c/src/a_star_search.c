@@ -42,7 +42,8 @@ void a_star_search(pSquareGrid map, pLocation start, pLocation goal)
 			}
 
 			new_cost = map->get_cost_so_far(map, &current) + map->get_cost(map, neighbour);
-			if(map->get_visited(map, neighbour) == 0 || new_cost < map->get_cost_so_far(map, neighbour))
+			if(frontier->have(frontier, neighbour, compare) == 0 || new_cost < map->get_cost_so_far(map, neighbour))
+			//if(map->get_visited(map, neighbour) == 0 || new_cost < map->get_cost_so_far(map, neighbour))
 			{
 				float priority = 0;
 				map->set_cost_so_far(map, neighbour, new_cost);
