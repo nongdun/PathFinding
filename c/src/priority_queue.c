@@ -123,7 +123,7 @@ int queue_pop(pQueue queue, pItem item)
 		if(item != NULL)
 		{
 			*item = node->data;		/*取出数据*/
-			//printf("pop %.2f\r\n", node->priority);
+			printf("pop  [%d,%d] priority %.2f length %d\r\n", node->data.x, node->data.y, node->priority, queue->length);
 		}
 
 		queue->head = node->next;	/*队头指向下一个节点*/

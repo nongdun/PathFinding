@@ -8,15 +8,6 @@
 
 #include "header.h"
 
-Queue frontier;
-Path search = {20,20,{}};
-Path path = {20,20,{}};
-Path cost_so_far = {20,20,{}};
-
-//Location start = {4,3};
-Location start = {4,15};
-Location goal  = {17,15};
-
 int map[MAP_HEIGHT][MAP_WIDTH] = {
  // 0001020304050607080910111213141516171819
 	{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},   // 00
@@ -67,7 +58,7 @@ SquareGrid map2 = {20, 20,
 	}
 };
 
-void draw_tile(pPath path, pLocation loc)
+void draw_tile(pSquareGrid path, pLocation loc)
 {
 	char string[4];
 	int i=0;
@@ -105,7 +96,6 @@ void draw_tile(pPath path, pLocation loc)
 		strcpy(string,"#");
 		i=0;
 	}
-#endif
 
 	if((loc->x == start.x) && (loc->y == start.y))
 	{
@@ -117,6 +107,7 @@ void draw_tile(pPath path, pLocation loc)
 		strcpy(string,"G");
 		i=0;
 	}
+#endif
 
 	if(i)
 	{
@@ -129,7 +120,7 @@ void draw_tile(pPath path, pLocation loc)
 
 }
 
-void DrawMap(pPath path, int style)
+void DrawMap(pSquareGrid path, int style)
 {
 	int i=0, j=0;
 	for(i=0; i<path->width; i++)
@@ -169,6 +160,10 @@ int main()
 	pSquareGrid grid_map = grid_init();
 	memcpy(grid_map->cost, map, sizeof(map));
 
+	pLocation start = location_init(4,8);
+	//pLocation start = location_init(4,15);
+	pLocation goal = location_init(17,15);
+
 	int i=0, j=0;
 	for(i=0;i<20;i++)
 	{
@@ -179,7 +174,7 @@ int main()
 		printf("\r\n");
 	}
 
-#if 1
+#if 0
 	//breadth_first_search(&map, &start, &goal);
 	dijkstra_search(grid_map, &start, &goal);
 	DrawMap(&search, 0);
@@ -198,14 +193,20 @@ int main()
 
 	queue_clear(&frontier);
 #endif
-	a_star_search(grid_map, &start, &goal);
-	DrawMap(&search, 0);
+
+	a_star_search(grid_map, start, goal);
+	DrawMap(grid_map, 0);
 	printf("\r\n");
 
-	RestructPath(&search, &start, &goal);
+#if 0
+	RestructPath(&search, start, goal);
 	DrawMap(&path, 0);
 	printf("\r\n");
+#endif
 
+	location_destroy(start);
+	location_destroy(goal);
+	grid_destroy(grid_map);
 	return 0;
 }
 

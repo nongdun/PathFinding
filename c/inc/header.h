@@ -17,10 +17,12 @@
 #include "graph.h"
 #include "priority_queue.h"
 
+#if 0
 extern Queue frontier;
 extern Path search;
 extern Path path;
 extern Path cost_so_far;
+#endif
 
 extern Location start;
 extern Location goal;

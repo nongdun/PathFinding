@@ -13,15 +13,16 @@ float heuristic(pLocation loc1, pLocation loc2)
 }
 
 /*A star搜索*/
-pPath a_star_search(pSquareGrid map, pLocation start, pLocation goal)
+void a_star_search(pSquareGrid map, pLocation start, pLocation goal)
 {
-	pQueue frontier = queue_init();
-	frontier->push(frontier, start, 0);
-	search.cost_so_far[start->y][start->x] = 0;
+	pQueue frontier = queue_init();					/*初始化搜索队列*/
+	frontier->push(frontier, start, 0);				/*起始坐标入队*/
+	map->set_cost_so_far(map, start, 0);			/*起始搜索权值*/
+	//search.cost_so_far[start->y][start->x] = 0;
 
 	while(!frontier->empty(frontier))
 	{
-		int i=0;
+		int dir=0;
 		Location current;
 		frontier->pop(frontier, &current);
 
@@ -30,35 +31,34 @@ pPath a_star_search(pSquareGrid map, pLocation start, pLocation goal)
 			break;
 		}
 
-		for(i=0; i<4; i++)
+		for(dir=0; dir<4; dir++)
 		{
 			float new_cost=0;
-			Location neighbour;
-			neighbour = map->get_neighbour(map, &current, i);
-			if(neighbour.x < 0 || neighbour.y < 0)
+
+			pLocation neighbour = map->get_neighbour(map, &current, dir);
+			if(neighbour == NULL)
 			{
 				continue;
 			}
 
-			new_cost = search.cost_so_far[current.y][current.x] + map->get_cost(map, &neighbour);
-			//if(is_in_queue(frontier, &neighbour, compare) == 0 || new_cost< search.cost_so_far[neighbour.y][neighbour.x])
-			if(search.visited[neighbour.y][neighbour.x] == 0 || new_cost< search.cost_so_far[neighbour.y][neighbour.x])
+			new_cost = map->get_cost_so_far(map, &current) + map->get_cost(map, neighbour);
+			if(map->get_visited(map, neighbour) == 0 || new_cost < map->get_cost_so_far(map, neighbour))
 			{
 				float priority = 0;
-				search.cost_so_far[neighbour.y][neighbour.x] = new_cost;
+				map->set_cost_so_far(map, neighbour, new_cost);
 
-				priority = new_cost + heuristic(goal, &neighbour);
-				//priority = heuristic(goal, &neighbour);	/*greedy*/
-				//printf("heuristic %.2f\r\n",priority);
+				priority = new_cost + heuristic(goal, neighbour);
 
-				frontier->push(frontier, &neighbour, priority);
+				frontier->push(frontier, neighbour, priority);
+				printf("push [%d,%d] priority %f\r\n", neighbour->x, neighbour->y, priority);
 
-				set_loc(&search, &neighbour, &current);
-				search.visited[neighbour.y][neighbour.x] = 1;
+				map->set_came_from(map, neighbour, &current);
+				map->set_visited(map, &current);
 			}
+
+			free(neighbour);
 		}
 	}
 
 	frontier->destroy(frontier);
-	return &search;
 }
